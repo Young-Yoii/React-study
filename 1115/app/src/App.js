@@ -8,7 +8,7 @@ const Header = ({title}) => {
 }
 
 const Nav = ({topics})=> {
-  const liTag = topics.map(item => 
+  const liTag = topics.map(item =>
     <li key={item.id}><a href={"/read/"+item.id}>{item.title}</a></li>
   )
   return <nav>
