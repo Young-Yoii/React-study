@@ -9,9 +9,19 @@ const Header = ({title , onChangeMode}) => {
   </header>;
 }
 
-const Nav = ({topics}) => {
+const Nav = ({topics , onChangeMode}) => {
   const liTag = topics.map(topic => 
-  <li key={topic.id}><a href={"/read/" + topic.id}>{topic.title}</a></li>
+  <li key={topic.id}>
+    <a 
+      href={"/read/" + topic.id} 
+      onClick={(e) => {
+        e.preventDefault()
+        onChangeMode()
+      }}
+    >
+      {topic.title}
+    </a>
+  </li>
   )
 
   return <nav>
