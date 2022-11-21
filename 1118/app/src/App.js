@@ -1,15 +1,18 @@
 import './App.css';
 
-const Header = ({title}) => {
+const Header = ({title , onChangeMode}) => {
   return <header>
-    <h1><a href="index.html">{title}</a></h1>
+    <h1><a href="index.html" onClick={(e) => {
+      e.preventDefault()
+      onChangeMode()
+    }}>{title}</a></h1>
   </header>;
 }
 
 const Nav = ({topics}) => {
-  const liTag = topics.map((topic) => {
-    <li key={topic.id}><a href={"/read/" + topic.id}>{topic.title}</a></li>
-  })
+  const liTag = topics.map(topic => 
+  <li key={topic.id}><a href={"/read/" + topic.id}>{topic.title}</a></li>
+  )
 
   return <nav>
     {liTag}
@@ -32,8 +35,9 @@ function App() {
   ]
   return (
     <div className="App">
-      <Header title="Web"/>
-      <Nav topics={topics}/>
+      <Header title="Web" onChangeMode={() => {
+        alert('WELCOME')}}/>
+      <Nav topics={topics} onChangeMode={() => {alert('READ')}}/>
       <Article title="Welcome" body="Hello,Web"/>
     </div>
   );
