@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { useImmer } from 'use-immer';
+import axios from 'axios';
 import './App.css'
 
 const Header = ({title}) => {
@@ -58,11 +59,16 @@ const Read = ({topics}) => {
 function App() {
   const navgate = useNavigate()
   const [nextId, setNextId] = useState(4);
-  const [topics, setTopics] = useImmer([
-    {id:1, title:"html", body:"html is..."},
-    {id:2, title:"css", body:"css is..."},
-    {id:3, title:"js", body:"js is..."},
-  ]);
+  const [topics, setTopics] = useImmer([]);
+  //서버랑 통신하는 코드
+  const fetchTopics = async() => {
+    const topics = await axios.get('http://localhost:3333/topics');
+    setTopics(topics.data);
+  }
+
+  useEffect(() => {
+    fetchTopics()
+  },[])
   
   const saveHandler = (title, body) => {
     setTopics(draft => {
