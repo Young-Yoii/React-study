@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useImmer } from 'use-immer';
 import './App.css'
 
 const Header = ({title , onChangeMode}) => {
@@ -65,7 +66,7 @@ function App() {
   const [mode, setMode] = useState('WELCOME');
   const [id, setId] = useState(null);
   const [nextId, setNextId] = useState(4);
-  const [topics, setTopics] = useState([
+  const [topics, setTopics] = useImmer([
     {id:1, title:"html", body:"html is..."},
     {id:2, title:"css", body:"css is..."},
     {id:3, title:"js", body:"js is..."},
@@ -79,10 +80,9 @@ function App() {
   }
   
   const saveHandler = (title, body) => {
-    // add title and body to topics
-    let newTopics = [...topics];
-    newTopics.push({id:nextId, title, body})
-    setTopics(newTopics);
+    setTopics(draft => {
+      draft.push({id:nextId, title, body});
+    })
     setId(nextId);
     setNextId(current => current + 1);
     setMode('READ');
