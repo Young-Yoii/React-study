@@ -65,9 +65,9 @@ const Read = ({topics}) => {
 }
 
 function App() {
-  const navgate = useNavigate()
-  const [nextId, setNextId] = useState(4);
+  const navgate = useNavigate();
   const [topics, setTopics] = useImmer([]);
+  
   //서버랑 통신하는 코드
   const fetchTopics = async() => {
     const _topics = await axios.get('/topics');
@@ -79,11 +79,12 @@ function App() {
   },[])
   
   const saveHandler = (title, body) => {
-    setTopics(draft => {
-      draft.push({id:nextId, title, body});
+    axios.post(`/topics/`, {title, body}).then(result => {
+      setTopics(draft => {
+        draft.push(result.data);
+      })
+      navgate(`/read/${result.data.id}`);
     })
-    navgate(`/read/${nextId}`);
-    setNextId(current => current + 1);
   }
 
   return (
