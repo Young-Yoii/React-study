@@ -9,7 +9,6 @@ const Header = ({title , onChangeMode}) => {
     }}>{title}</a></h1>
   </header>;
 }
-
 const Nav = ({topics , onChangeMode}) => {
   const liTag = topics.map(topic => 
   <li key={topic.id}>
@@ -62,7 +61,6 @@ const Create = ({onSave}) => {
   <p><input type="submit" value="Create" /></p>
 </form>
 }
-
 function App() {
   const [mode, setMode] = useState('WELCOME');
   const [id, setId] = useState(null);
