@@ -1,30 +1,19 @@
 import { useState } from 'react';
+import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { useImmer } from 'use-immer';
 import './App.css'
 
-const Header = ({title , onChangeMode}) => {
+const Header = ({title}) => {
   return <header>
-    <h1><a href="index.html" onClick={(e) => {
-      e.preventDefault()
-      onChangeMode('WELCOME')
-    }}>{title}</a></h1>
+    <h1><Link to="/">{title}</Link></h1>
   </header>;
 }
-const Nav = ({topics , onChangeMode}) => {
+const Nav = ({topics}) => {
   const liTag = topics.map(topic => 
   <li key={topic.id}>
-    <a 
-      href={`/read/${topic.id}`} 
-      onClick={(e) => {
-        e.preventDefault()
-        onChangeMode('READ', topic.id)
-      }}
-    >
-      {topic.title}
-    </a>
+    <Link to={`/read/${topic.id}`}>{topic.title}</Link>
   </li>
   )
-
   return <nav>
     {liTag}
   </nav>;
@@ -37,14 +26,10 @@ const Article = ({title, body}) => {
   </article>;
 }
 
-const Control = ({onChangeMode}) => {
+const Control = () => {
   return <ul>
-  <li><a href="/create" onClick={(e) => {
-  e.preventDefault()
-  onChangeMode('CREATE')}}>Create</a></li>
-  <li><a href="/update" onClick={(e) => {
-  e.preventDefault()
-  onChangeMode('update')}}>update</a></li>
+    <li><Link to="/create">Create</Link></li>
+    <li><Link to="/update">update</Link></li>
   </ul>
 }
 
@@ -62,49 +47,41 @@ const Create = ({onSave}) => {
   <p><input type="submit" value="Create" /></p>
 </form>
 }
+
+const Read = ({topics}) => {
+  const params = useParams();
+  const id = Number(params.id);
+  const topic = topics.find((t) =>t.id === id)
+  return  <Article title={topic.title} body={topic.body}></Article>
+}
+
 function App() {
-  const [mode, setMode] = useState('WELCOME');
-  const [id, setId] = useState(null);
+  const navgate = useNavigate()
   const [nextId, setNextId] = useState(4);
   const [topics, setTopics] = useImmer([
     {id:1, title:"html", body:"html is..."},
     {id:2, title:"css", body:"css is..."},
     {id:3, title:"js", body:"js is..."},
-  ])
-
-  const changeModeHandler = (mode, id) => {
-    setMode(mode);
-    if(id !== undefined){
-      setId(id)
-    }
-  }
+  ]);
   
   const saveHandler = (title, body) => {
     setTopics(draft => {
       draft.push({id:nextId, title, body});
     })
-    setId(nextId);
+    navgate(`/read/${nextId}`);
     setNextId(current => current + 1);
-    setMode('READ');
   }
 
-  let content = null;
-  if(mode === 'WELCOME'){
-    content = <Article title="Welcome" body="Hello,Web!"/>
-  }else if (mode === 'READ'){
-    const selected = topics.find(t => t.id === id)
-    content = <Article title={selected.title} body={selected.body}/>
-  }else if(mode === 'CREATE') {
-    content = <Create onSave={saveHandler}/>
-  }else if(mode === 'update') {
-    content = <Article title="update" body="update"/>
-  }
   return (
     <div className="App">
-      <Header title="Web" onChangeMode={changeModeHandler}/>
-      <Nav topics={topics} onChangeMode={changeModeHandler}/>
-      {content}
-      <Control onChangeMode={changeModeHandler}/>
+      <Header title="Web"/>
+      <Nav topics={topics}/>
+      <Routes>
+        <Route path='/' element={<Article title="Welcome" body="Hello,Web!"/>} />
+        <Route path='/create' element={<Create onSave={saveHandler} />} />
+        <Route path='/read/:id' element={<Read topics={topics}/>} />
+      </Routes>
+      <Control/>
     </div>
   );
 }
