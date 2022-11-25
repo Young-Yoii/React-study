@@ -52,8 +52,16 @@ const Create = ({onSave}) => {
 const Read = ({topics}) => {
   const params = useParams();
   const id = Number(params.id);
-  const topic = topics.find((t) =>t.id === id)
-  return  <Article title={topic.title} body={topic.body}></Article>
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
+  useEffect(() => {
+    axios.get(`/topics/${id}`).then(res => {
+      setTitle(res.data.title);
+      setBody(res.data.body);
+    })
+  }, [id])
+  return  <Article title={title} body={body}></Article>
 }
 
 function App() {
@@ -62,8 +70,8 @@ function App() {
   const [topics, setTopics] = useImmer([]);
   //서버랑 통신하는 코드
   const fetchTopics = async() => {
-    const topics = await axios.get('http://localhost:3333/topics');
-    setTopics(topics.data);
+    const _topics = await axios.get('/topics');
+    setTopics(_topics.data);
   }
 
   useEffect(() => {
