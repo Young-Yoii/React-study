@@ -28,9 +28,11 @@ const Article = ({title, body}) => {
 }
 
 const Control = () => {
+  const params = useParams();
+  const id = Number(params.id);
   return <ul>
     <li><Link to="/create">Create</Link></li>
-    <li><Link to="/update">update</Link></li>
+    {id ? <li><Link to={`/update/${id}`}>update</Link></li> : null}
   </ul>
 }
 
@@ -96,7 +98,12 @@ function App() {
         <Route path='/create' element={<Create onSave={saveHandler} />} />
         <Route path='/read/:id' element={<Read topics={topics}/>} />
       </Routes>
-      <Control/>
+      <Routes>
+        <Route path='/' element={<Control/>} />
+        <Route path='/create' element={<Control/>} />
+        <Route path='/read/:id' element={<Control/>} />
+        <Route path="/update/:id" element={<Control/>} />
+      </Routes>
     </div>
   );
 }
