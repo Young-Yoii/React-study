@@ -76,7 +76,7 @@ const Update = ({onSave}) => {
     e.preventDefault()
     const title = e.target.title.value;
     const body = e.target.body.value;
-    onSave(title, body);
+    onSave(id, title, body);
   }
 
   return <form onSubmit={submitHandler}>
@@ -115,12 +115,23 @@ function App() {
     fetchTopics()
   },[])
   
-  const saveHandler = (title, body) => {
+  const createHandler = (title, body) => {
     axios.post(`/topics/`, {title, body}).then(result => {
       setTopics(draft => {
         draft.push(result.data);
       })
       navgate(`/read/${result.data.id}`);
+    })
+  }
+
+  const updateHandler = (id, title, body) => {
+    axios.patch(`/topics/${id}`, {title, body}).then(result => {
+      setTopics(draft => {
+        const index = draft.findIndex(t => t.id === id);
+        draft[index].title = title;
+        draft[index].body = body;
+      })
+      navgate(`/read/${id}`);
     })
   }
 
@@ -130,8 +141,8 @@ function App() {
       <Nav topics={topics}/>
       <Routes>
         <Route path='/' element={<Article title="Welcome" body="Hello,Web!"/>} />
-        <Route path='/create' element={<Create onSave={saveHandler} />} />
-        <Route path='/update/:id' element={<Update onSave={saveHandler} />} />
+        <Route path='/create' element={<Create onSave={createHandler} />} />
+        <Route path='/update/:id' element={<Update onSave={updateHandler} />} />
         <Route path='/read/:id' element={<Read topics={topics}/>} />
       </Routes>
       <Routes>
