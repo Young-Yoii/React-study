@@ -51,6 +51,41 @@ const Create = ({onSave}) => {
 </form>
 }
 
+const Update = ({onSave}) => {
+   const params = useParams();
+  const id = Number(params.id);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+
+  useEffect(() => {
+    axios.get(`/topics/${id}`).then(res => {
+      setTitle(res.data.title);
+      setBody(res.data.body);
+    })
+  }, [id])
+
+  const titleHandler = (e) => {
+    setTitle(e.target.value);
+  }
+
+  const bodyHandler = (e) => {
+    setBody(e.target.value);
+  }
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+    const title = e.target.title.value;
+    const body = e.target.body.value;
+    onSave(title, body);
+  }
+
+  return <form onSubmit={submitHandler}>
+  <p><input type="text" name="title" placeholder='title' value={title} onChange={titleHandler}/></p>
+  <p><textarea name="body" placeholder='body' value={body} onChange={bodyHandler}></textarea></p>
+  <p><input type="submit" value="Update" /></p>
+</form>
+}
+
 const Read = () => {
   const params = useParams();
   const id = Number(params.id);
@@ -96,6 +131,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Article title="Welcome" body="Hello,Web!"/>} />
         <Route path='/create' element={<Create onSave={saveHandler} />} />
+        <Route path='/update/:id' element={<Update onSave={saveHandler} />} />
         <Route path='/read/:id' element={<Read topics={topics}/>} />
       </Routes>
       <Routes>
