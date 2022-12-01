@@ -98,3 +98,32 @@ test("유저를 만든다", () => {
 //함수를 모킹모듈로 만들면 실제 db에는 저장되지 않고 테스트가 가능함.
 -------------------------------- */
 
+/* --------------------------------assertion
+
+const mockFn = jest.fn();
+mockFn(10,20);
+mockFn();
+mockFn(30,40);
+
+test("한 번 이상 호출?" , () => {
+    expect(mockFn).toHaveBeenCalled();
+})
+test("정확히 세 번 호출?" , () => {
+    expect(mockFn).toHaveBeenCalledTimes(3);
+})
+test("10, 20을 전달받은 함수가 있는가?" , () => {
+    expect(mockFn).toHaveBeenCalledWith(10, 20)
+})
+test("마지막 함수는 30, 40받았는가?" , () => {
+    expect(mockFn)..toHaveBeenLastCalledWith(30,40)
+})
+-------------------------------- */
+
+/* --------------------------------
+//snapshot
+
+.toMatchSnapshot() // 기존에 스냅샷이 없을 경우 .snap 파일을 만든다. 
+//기존에 스냅샷이 있을 경우, 새로운 스냅샷과 비교하여 변경사항이 있으면 테스트는 실패
+
+.toMatchInlineSnapshot() // 별도의 스냅샷 파일을 만들지 않음, 어떻게 스냅샷이 쓰였는지 하나의 파일안에서 알 수 있게됨
+-------------------------------- */
