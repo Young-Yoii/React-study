@@ -1,4 +1,4 @@
-const fn = require('./fn');
+const fn = require('./matchers');
 
 //1.toBe 
 test('2 더하기 3은 5야.', () => {
