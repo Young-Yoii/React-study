@@ -28,12 +28,17 @@ const Article = ({title, body}) => {
   </article>;
 }
 
-const Control = () => {
+const Control = ({onDelete}) => {
   const params = useParams();
   const id = Number(params.id);
   return <ul>
     <li><Link to="/create">Create</Link></li>
-    {id ? <li><Link to={`/update/${id}`}>update</Link></li> : null}
+    {id ? (
+    <>
+      <li><Link to={`/update/${id}`}>update</Link></li>
+      <li><button onClick={() => {onDelete(id)}}>delete</button></li> {/*링크태그(a태그)는 데이터를 가져올때만 사용 수정,추가,변경 등 삭제를 할 때는 안됨*/}
+    </>
+    ) : null}
   </ul>
 }
 
@@ -51,6 +56,7 @@ const Create = ({onSave}) => {
   <p><input type="submit" value="Create" /></p>
 </form>
 }
+
 const Update = ({onSave}) => {
   const params = useParams();
  const id = Number(params.id);
@@ -133,6 +139,11 @@ function App() {
     })
   }
 
+  const deleteHandler = async(id) => {
+    await axios.delete(`/topics/${id}`);
+    fetchTopics();
+    navgate('/');
+  }
 
 return  (
 <div className="App">
@@ -147,8 +158,8 @@ return  (
       <Routes>
         <Route path='/' element={<Control/>} />
         <Route path='/create' element={<Control/>} />
-        <Route path='/read/:id' element={<Control/>} />
-        <Route path="/update/:id" element={<Control/>} />
+        <Route path='/read/:id' element={<Control onDelete={deleteHandler}/>} />
+        <Route path="/update/:id" element={<Control onDelete={deleteHandler}/>} />
       </Routes>
     </div>
   );
