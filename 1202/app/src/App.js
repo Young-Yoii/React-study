@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { useImmer } from 'use-immer';
+import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import './App.css';
 import axios from 'axios';
-import './App.css'
 
 const Header = ({title}) => {
   return <header>
@@ -51,39 +51,38 @@ const Create = ({onSave}) => {
   <p><input type="submit" value="Create" /></p>
 </form>
 }
-
 const Update = ({onSave}) => {
-   const params = useParams();
-  const id = Number(params.id);
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const params = useParams();
+ const id = Number(params.id);
+ const [title, setTitle] = useState('');
+ const [body, setBody] = useState('');
 
-  useEffect(() => {
-    axios.get(`/topics/${id}`).then(res => {
-      setTitle(res.data.title);
-      setBody(res.data.body);
-    })
-  }, [id])
+ useEffect(() => {
+   axios.get(`/topics/${id}`).then(res => {
+     setTitle(res.data.title);
+     setBody(res.data.body);
+   })
+ }, [id])
 
-  const titleHandler = (e) => {
-    setTitle(e.target.value);
-  }
+ const titleHandler = (e) => {
+   setTitle(e.target.value);
+ }
 
-  const bodyHandler = (e) => {
-    setBody(e.target.value);
-  }
+ const bodyHandler = (e) => {
+   setBody(e.target.value);
+ }
 
-  const submitHandler = (e) => {
-    e.preventDefault()
-    const title = e.target.title.value;
-    const body = e.target.body.value;
-    onSave(id, title, body);
-  }
+ const submitHandler = (e) => {
+   e.preventDefault()
+   const title = e.target.title.value;
+   const body = e.target.body.value;
+   onSave(id, title, body);
+ }
 
-  return <form onSubmit={submitHandler}>
-  <p><input type="text" name="title" placeholder='title' value={title} onChange={titleHandler}/></p>
-  <p><textarea name="body" placeholder='body' value={body} onChange={bodyHandler}></textarea></p>
-  <p><input type="submit" value="Update" /></p>
+ return <form onSubmit={submitHandler}>
+ <p><input type="text" name="title" placeholder='title' value={title} onChange={titleHandler}/></p>
+ <p><textarea name="body" placeholder='body' value={body} onChange={bodyHandler}></textarea></p>
+ <p><input type="submit" value="Update" /></p>
 </form>
 }
 
@@ -101,7 +100,6 @@ const Read = () => {
   }, [id])
   return  <Article title={title} body={body}></Article>
 }
-
 function App() {
   const navgate = useNavigate();
   const [topics, setTopics] = useImmer([]);
@@ -110,8 +108,7 @@ function App() {
   const fetchTopics = async() => {
     const _topics = await axios.get('/topics');
     setTopics(_topics.data);
-  }
-
+  } 
   useEffect(() => {
     fetchTopics()
   },[])
@@ -136,9 +133,10 @@ function App() {
     })
   }
 
-  return (
-    <div className="App">
-      <Header title="Web"/>
+
+return  (
+<div className="App">
+      <Header title="web" />
       <Nav topics={topics}/>
       <Routes>
         <Route path='/' element={<Article title="Welcome" body="Hello,Web!"/>} />
