@@ -1,9 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from 'react';
 import {useImmer} from 'use-immer';
 import { Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import darkSlice from './features/dark/darkSlice';
+import Like from './features/like/Like';
+
 const Header = ({title}) => {
   return <header>
       <h1><Link to="/">{title}</Link></h1>
@@ -29,6 +32,7 @@ const Article = ({title, body})=>{
   return <article>
     <h2>{title}</h2>
     {body}
+    <Like />
   </article>
 }
 function Control({onDelete}){
@@ -104,13 +108,28 @@ const Read = ()=>{
   }, [id]);
   return <Article title={title} body={body}></Article>
 }
-const DarkMode = ({isDark, changeMode})=>{
+const DarkMode = ()=>{
+  const dispatch = useDispatch();
+  const isDark = useSelector((state)=>{
+    return state.darkmode.isDark;
+  });
   return <div>
-    <button onClick={()=>{changeMode(!isDark);}}>{isDark ? 'Light' : 'Dark'}</button>
+    <button onClick={()=>{
+       //darkSlice의 actions func 사용
+       //파라미터를 주는 방식
+      dispatch(darkSlice.actions.change(!isDark))
+      // dispatch({type:'darkmode/change', payload:!isDark})
+      //데이터를 바꿀 때는 dispatch, dispatch로 전달하는 것은 action
+      //action은 반드시 type이 있어야 하며 부가적인 것은 payload로 전달
+    }}>{isDark ? 'Light' : 'Dark'}</button>
+    <button onClick={()=>{dispatch(darkSlice.actions.toDark())}}>toDark</button>
+    <button onClick={()=>{dispatch(darkSlice.actions.toLight())}}>toLight</button>
+    <button onClick={()=>{dispatch(darkSlice.actions.toggle())}}>Toggle</button>
   </div>
 }
 function App() {
-  const [isDark, setIsDark] = useState(false);
+  const isDark = useSelector(state => state.darkmode.isDark);
+  //state 의 값을 가져올때는 useSelector를 쓰면된다 ~!
   const [topics, setTopics] = useImmer([]);
   const fetchTopics = async()=>{
     const topics = await axios.get('/topics');
@@ -149,9 +168,7 @@ function App() {
   return (
     <div className="App">
       <Header title="웹" />
-      <DarkMode isDark={isDark} changeMode={(isDark)=>{
-        setIsDark(isDark);
-      }}></DarkMode>
+      <DarkMode></DarkMode>
       <Nav topics={topics} />
       <Routes>
       <Route path="/" element={<Article title="Hello" body="Welcome, WEB!" />}></Route>
