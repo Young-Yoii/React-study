@@ -58,7 +58,8 @@ function Control() {
 const Create = () => {
   const navigate = useNavigate();
   const [createTopic, createInfo] = useCreateTopicMutation();
-  //첫번째 원소는 함수
+  //mutation hook은 return 값이 배열이다.
+  //첫번째 원소는 서버로 데이터를 보내는 함수
   const submitHandler = async (evt)=>{
     evt.preventDefault();
     const title = evt.target.title.value;
@@ -82,7 +83,10 @@ const Update = () => {
   const id = Number(params.id);
   const navigate = useNavigate();
   const {data:topic, isLoading} = useGetTopicQuery(id);
+  //query hook은 return값이 객체형식이다.
+  //데이터를 가져오고
   const [updateTopic] = useUpdateTopicMutation();
+  //수정하는 hook
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
@@ -92,6 +96,9 @@ const Update = () => {
       setBody(topic.body);
     }
   }, [topic]);
+  //data와 form을 연결시키기위해 useEffect 사용
+  //form의value에 바로 topic.title을 넣으면 값이 수정이되지 않기때문임!
+
   if(isLoading){
     return <>Loading...</>
   }
