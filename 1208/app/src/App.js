@@ -16,6 +16,8 @@ import {
 //RTKquery는 서버와 통신할 때 사용하는 것이다.
 //끝이 query 로 끝나면 데이터를 읽을 때 쓰는 훅 - 자동으로 실행
 //mutation으로 끝나면 데이터를 수정할때 쓰는 훅 - 수동으로 실행
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 const Header = ({title}) => {
   return <header>
@@ -174,26 +176,30 @@ function App() {
   }, [isDark])
 
   return (
-    <div className="App">
+    <Container maxWidth="sm">
       <Header title="웹" />
       {likesIsLoading ? 'Loading...' : <>좋아요 수: {likes.count}</>}
       <DarkMode></DarkMode>
-      {topicsIsLoading ? 'Loading...' : <Nav topics={topics} />}
-      <Routes>
-      <Route path="/" element={<Article title="Hello" body="Welcome, WEB!" />}></Route>
-      <Route path="/create" element={<Create></Create>}></Route>
-      <Route path="/update/:id" element={<Update></Update>}></Route>
-      <Route path="/read/:id" element={<Read />}></Route>
-      </Routes>
-      <Routes>
-        <Route path="/" element={<Control></Control>} />
-        <Route path="/read/:id" element={<Control></Control>} />
-        <Route path="/create" element={<Control></Control>} />
-        <Route path="/update/:id" element={<Control></Control>} />
-      </Routes>
-      <Like />
-      <LikeServer />
-    </div>
+      <Grid container>
+        <Grid xs={12} sm={3}>{topicsIsLoading ? 'Loading...' : <Nav topics={topics} />}</Grid>
+        <Grid xs={12} sm={9}>
+            <Routes>
+          <Route path="/" element={<Article title="Hello" body="Welcome, WEB!" />}></Route>
+          <Route path="/create" element={<Create></Create>}></Route>
+          <Route path="/update/:id" element={<Update></Update>}></Route>
+          <Route path="/read/:id" element={<Read />}></Route>
+          </Routes>
+          <Routes>
+            <Route path="/" element={<Control></Control>} />
+            <Route path="/read/:id" element={<Control></Control>} />
+            <Route path="/create" element={<Control></Control>} />
+            <Route path="/update/:id" element={<Control></Control>} />
+          </Routes>
+          <Like />
+          <LikeServer />
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
 
